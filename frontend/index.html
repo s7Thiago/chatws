@@ -2,29 +2,73 @@
 <html lang="en">
 
 <head>
-    <!-- <script src="https://cdn.socket.io/4.4.0/socket.io.js"></script> -->
+    <title>Websocket Chat</title>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-
-    <title>Websocket Example</title>
 </head>
 
 <body>
 
+    <div>
+        <h1>Conversations - <h2 id="title-username"></h2></h1>
+
+        <p>
+            <input type="text" id="username-input" placeholder="Your username">
+            <button id="join-button">join</button>
+        </p>
+
+        <input type="text" id="message-input" placeholder="Type your message">
+        <button id="send-button">Send</button>
+    </div>
+
+    <div id="chat-messages-container">
+        <ul id="messages-list"></ul>
+    </div>
+
     <script>
-        var sock = new SockJS('http://localhost:8080/chat');
 
-        sock.onopen = function () {
-            console.log('open');
-            sock.send('test');
+        // Elements
+        var messageField = document.getElementById('message-input');
+        var usernameField = document.getElementById('username-input');
+        var titleUsername = document.getElementById('title-username');
+        var messagesList = document.getElementById('messages-list');
+        var sendButton = document.getElementById('send-button');
+        var joinButton = document.getElementById('join-button');
+
+        usernameField.value = "Thiago"
+
+        var socket = new WebSocket('ws://localhost:8080/chatws');
+        // var socket = new WebSocket('ws://echo.websocket.org');
+
+        joinButton.addEventListener('click', function () {
+            const joinMessage = {
+                action: 'subscribe',
+                topic: '/topic/messages',
+                data: {
+                    sender: usernameField.value.trim(),
+                    type: 'JOIN'
+                }
+            };
+
+            socket.send(JSON.stringify(joinMessage));
+            console.log('opened and subscribed on /topic/messages');
+        });
+
+        socket.onopen = function () {
         };
 
-        sock.onmessage = function (e) {
-            console.log('message', e.data);
-            sock.close();
+        socket.onmessage = function (e) {
+            const message = JSON.parse(e.data);
+            console.log('message: ', message);
+            titleUsername.textContent = message.username;
         };
 
-        sock.onclose = function () {
-            console.log('close');
+        socket.onclose = function () {
+            // socket.close();
+            console.log('closed');
+        };
+
+        socket.onerror = function (e) {
+            console.log('Ocorreu um erro: ', e);
         };
 
     </script>
