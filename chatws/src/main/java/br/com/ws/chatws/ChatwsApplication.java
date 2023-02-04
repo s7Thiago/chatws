@@ -1,4 +1,4 @@
-package br.com.ws.chat.chatws;
+package br.com.ws.chatws;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

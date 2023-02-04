@@ -1,4 +1,4 @@
-package br.com.ws.chat.chatws;
+package br.com.ws.chatws;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
