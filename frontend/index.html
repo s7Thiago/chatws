@@ -2,14 +2,18 @@
 <html lang="en">
 
 <head>
-    <title>Websocket Chat</title>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+
+    <title>Websocket Chat</title>
 </head>
 
 <body>
 
     <div>
-        <h1>Conversations - <h2 id="title-username"></h2></h1>
+        <h1>Conversations - <h2 id="title-username"></h2>
+        </h1>
 
         <p>
             <input type="text" id="username-input" placeholder="Your username">
@@ -26,6 +30,9 @@
 
     <script>
 
+        var sock = new SockJS('http://localhost:8085/chatws');
+        var stomp = Stomp.over(sock);
+
         // Elements
         var messageField = document.getElementById('message-input');
         var usernameField = document.getElementById('username-input');
@@ -34,45 +41,56 @@
         var sendButton = document.getElementById('send-button');
         var joinButton = document.getElementById('join-button');
 
-        usernameField.value = "Thiago"
+        // usernameField.value = "Thiago"
 
-        const socket = new WebSocket('ws://localhost:8085/chatws');
-        // var socket = new WebSocket('ws://echo.websocket.org');
+        // STOMP: Conectando cliente stomp ao servidor
+        stomp.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stomp.subscribe('/topic/messages', function (message) {
+                let msg = JSON.parse(message.body);
 
-        joinButton.addEventListener('click', function () {
-            const joinMessage = {
-                action: 'subscribe',
-                topic: '/topic/messages',
-                data: {
-                    sender: usernameField.value.trim(),
-                    type: 'JOIN'
+                switch (msg.type) {
+                    case 'JOIN':
+                        titleUsername.innerText = msg.sender + ' joined!';
+                        break;
+                    case 'CHAT':
+                        messagesList.appendChild(createMessage(msg));
+                    default:
+                        break;
                 }
-            };
 
-            socket.send(JSON.stringify(joinMessage));
-            console.log('opened and subscribed on /topic/messages');
+
+            });
         });
 
-        socket.onopen = function () {
-        };
+        joinButton.addEventListener('click', function () {
+            console.log('click: sockJs: join');
 
-        socket.onmessage = function (e) {
-            const message = JSON.parse(e.data);
-            console.log('message: ', message);
-            titleUsername.textContent = message.username;
-        };
+            stomp.send("/chat/join", {}, JSON.stringify({
+                sender: usernameField.value.trim(),
+                type: 'JOIN'
+            }));
 
-        socket.onclose = function () {
-            // socket.close();
-            console.log('closed');
-        };
+        });
 
-        socket.onerror = function (e) {
-            console.log('Ocorreu um erro: ', e);
-        };
+        sendButton.addEventListener('click', function () {
+            console.log('click: sockJs: send');
+
+            stomp.send("/chat/talk", {}, JSON.stringify({
+                sender: usernameField.value.trim(),
+                content: messageField.value.trim(),
+                type: 'CHAT'
+            }));
+
+        });
+
+        function createMessage(msg) {
+            let li = document.createElement('li');
+            li.innerHTML = '<b>' + msg.sender + '</b>: ' + msg.content;
+            return li;
+        }
 
     </script>
 
 </body>
-
 </html>
