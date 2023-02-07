@@ -5,22 +5,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 
-
-    <title>Websocket Chat</title>
+    <title id="tab-title" >Websocket Chat</title>
 </head>
 
 <body>
 
     <div>
-        <h1>Conversations - <h2 id="title-username"></h2>
-        </h1>
+        <h1>Conversas</h1>
+        <div id="chat-messages-container">
+            <ul style="list-style-type: none;" id="users-joined"></ul>
+        </div>
 
         <p>
-            <input type="text" id="username-input" placeholder="Your username">
+            <input type="text" id="username-input" placeholder="Seu nome">
             <button id="join-button">join</button>
         </p>
 
-        <input type="text" id="message-input" placeholder="Type your message">
+        <input type="text" id="message-input" placeholder="Digite sua mensagem">
         <button id="send-button">Send</button>
     </div>
 
@@ -34,9 +35,10 @@
         var stomp = Stomp.over(sock);
 
         // Elements
+        var tabTitle = document.getElementById('tab-title');
         var messageField = document.getElementById('message-input');
         var usernameField = document.getElementById('username-input');
-        var titleUsername = document.getElementById('title-username');
+        var usersJoined = document.getElementById('users-joined');
         var messagesList = document.getElementById('messages-list');
         var sendButton = document.getElementById('send-button');
         var joinButton = document.getElementById('join-button');
@@ -51,7 +53,8 @@
 
                 switch (msg.type) {
                     case 'JOIN':
-                        titleUsername.innerText = msg.sender + ' joined!';
+                        tabTitle.innerText = 'Chat - ' + msg.sender;
+                        usersJoined.appendChild(createJoinMessage(msg));
                         break;
                     case 'CHAT':
                         messagesList.appendChild(createMessage(msg));
@@ -87,6 +90,12 @@
         function createMessage(msg) {
             let li = document.createElement('li');
             li.innerHTML = '<b>' + msg.sender + '</b>: ' + msg.content;
+            return li;
+        }
+
+        function createJoinMessage(msg) {
+            let li = document.createElement('li');
+            li.innerHTML = '<b>✅' + msg.sender + ' entrou...</b>: ';
             return li;
         }
 
