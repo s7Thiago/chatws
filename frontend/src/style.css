@@ -1,0 +1,58 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+button {
+    border-radius: 10px;
+    cursor: pointer;
+    height: 40px;
+    justify-content: center;
+    line-height: 24px;
+    background-color: rgb(0, 105, 255);
+    border: none;
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    padding: 0px 20px;
+    transition: background-color 250ms ease 0s;
+    width: 10%;
+    will-change: background-color;
+}
+
+input{
+    background: #081b4b;
+    color: #fff;
+    border-radius: 16px;
+    margin: 1em 0;
+    overflow: auto;
+    overflow-wrap: normal;
+    padding: 1em;
+    white-space: normal;
+    word-wrap: normal;
+}
+
+#app-title{
+    display: block;
+}
+
+#users-joined {
+    display: flex;
+}
+
+#users-joined li{
+    display: flex;
+    background-color: #081b4b;
+    padding: 5px;
+    margin: 10px;
+    color: white;
+    border-radius: 50px;
+    font-size: 30px;
+    height: 50px;
+    width: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden{
+    display: none;
+}

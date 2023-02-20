@@ -1,0 +1,34 @@
+version: '3.8'
+
+networks:
+  chatws_net:
+    driver: bridge
+
+services:
+  chatws-server:
+    image: chatws-server
+    container_name: chatws-server
+    volumes:
+      - /c/Users/thyag/Workspaces/Java/Websockets/chat/chatws:/app/server/chatws
+    networks:
+      - chatws_net
+    build:
+      context: chatws
+      dockerfile: ./Dockerfile
+    ports:
+      - 8085:8085
+
+  chatws-ui:
+    container_name: chatws-ui
+    image: chatws-ui
+    networks:
+      - chatws_net
+    build:
+      context: frontend
+      dockerfile: ./Dockerfile
+    volumes:
+      - /c/Users/thyag/Workspaces/Java/Websockets/chat/frontend:/app/chatws/frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - chatws-server

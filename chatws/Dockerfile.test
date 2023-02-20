@@ -1,0 +1,5 @@
+from ubuntu:latest
+
+ENV AMBIENTE=dev
+
+CMD echo "Ambiente: $AMBIENTE"
