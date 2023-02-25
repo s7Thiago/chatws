@@ -5,7 +5,8 @@ WORKDIR /app/server/chatws
 COPY . .
 
 RUN apt-get update -y \
-    && apt-get install vim -y
+    && apt-get install git vim iputils-ping -y \
+    && ./mvnw clean install
 
 EXPOSE 8085
 

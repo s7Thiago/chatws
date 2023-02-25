@@ -5,7 +5,9 @@ networks:
     driver: bridge
 
 services:
-  chatws-server:
+
+# chatws - Backend
+  backend:
     image: chatws-server
     container_name: chatws-server
     volumes:
@@ -18,7 +20,8 @@ services:
     ports:
       - 8085:8085
 
-  chatws-ui:
+# chatws - Frontend
+  ui:
     container_name: chatws-ui
     image: chatws-ui
     networks:
@@ -31,4 +34,39 @@ services:
     ports:
       - 3000:3000
     depends_on:
-      - chatws-server
+      - backend
+
+# Elasticsearch
+  e:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      # - ES_PROTOCOL="http"
+      # - xpack.security.enabled=false
+      # - ELASTIC_APM_VERIFY_SERVER_CERT=false
+      # - XPACK_LICENSE_SELF_GENERATED_TYPE="basic"
+      # - node.max_local_storage_nodes=2
+    volumes:
+      - /c/Users/thyag/Workspaces/Java/Websockets/chat/elasticsearch:/usr/share/elasticsearch/data:rw
+      - /c/Users/thyag/Workspaces/Java/Websockets/chat/logs/elasticsearch:/usr/share/elasticsearch/logs,rw
+    networks:
+      - chatws_net
+    ports:
+      - 9200:9200
+      - 9300:9300
+    depends_on:
+      - backend
+
+# Kibana
+  k:
+    image: docker.elastic.co/kibana/kibana:7.17.9
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - chatws_net
+    ports:
+      - 5601:5601
+    depends_on:
+      - e
