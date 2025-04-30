@@ -11,11 +11,11 @@ services:
     image: chatws-server
     container_name: chatws-server
     volumes:
-      - /c/Users/thyag/Workspaces/Java/Websockets/chat/chatws:/app/server/chatws
+      - ./backend:/app/chatws/server
     networks:
       - chatws_net
     build:
-      context: chatws
+      context: backend
       dockerfile: ./Dockerfile
     ports:
       - 8085:8085
@@ -30,7 +30,7 @@ services:
       context: frontend
       dockerfile: ./Dockerfile
     volumes:
-      - /c/Users/thyag/Workspaces/Java/Websockets/chat/frontend:/app/chatws/frontend
+      - ./frontend:/app/chatws/frontend
     ports:
       - 3000:3000
     depends_on:

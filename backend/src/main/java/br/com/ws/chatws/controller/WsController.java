@@ -31,7 +31,7 @@ public class WsController {
         message.setTime(StringUtils.getCurrentTimeStamp());
 
         WsController.log.info("User joined: " + new Gson().toJson(message));
-        service.saveLog(message);
+        //service.saveLog(message);
 
         return message;
     }
@@ -40,7 +40,7 @@ public class WsController {
     @SendTo("/topic/messages")
     public ChatMessage send(@Payload ChatMessage chatMessage) throws Exception {
 
-        service.saveLog(chatMessage);
+        //service.saveLog(chatMessage);
 
         WsController.log.info("New message: " + new Gson().toJson(chatMessage));
 

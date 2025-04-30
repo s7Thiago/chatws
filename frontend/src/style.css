@@ -15,7 +15,7 @@ button {
     font-weight: 600;
     padding: 0px 20px;
     transition: background-color 250ms ease 0s;
-    width: 10%;
+    width: 20%;
     will-change: background-color;
 }
 
@@ -46,9 +46,9 @@ input{
     margin: 10px;
     color: white;
     border-radius: 50px;
-    font-size: 30px;
-    height: 50px;
-    width: 50px;
+    font-size: 16px;
+    height: 30px;
+    width: 30px;
     justify-content: center;
     align-items: center;
 }

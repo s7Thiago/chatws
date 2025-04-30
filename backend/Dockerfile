@@ -1,13 +1,26 @@
-FROM openjdk:11
+# Imagem base para o Maven (para compilar o projeto)
+FROM maven:3.9.4-eclipse-temurin-17 AS builder
 
-WORKDIR /app/server/chatws
+# Define o diretório de trabalho dentro do container
+WORKDIR /app
 
+# Copia os arquivos do projeto Maven para o container
 COPY . .
 
-RUN apt-get update -y \
-    && apt-get install git vim iputils-ping -y \
-    && ./mvnw clean install
+# Executa o build do projeto usando Maven
+RUN mvn clean package -DskipTests
 
+# Imagem base para o runtime Java
+FROM eclipse-temurin:17-jre
+
+# Define o diretório de trabalho no container final
+WORKDIR /app
+
+# Copia o artefato gerado (JAR) do estágio de build
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expõe a porta 8085
 EXPOSE 8085
 
-CMD ./mvnw clean package && java -jar target/chatws-0.0.1-SNAPSHOT.jar
+# Comando para rodar a aplicação
+CMD ["java", "-jar", "app.jar"]
