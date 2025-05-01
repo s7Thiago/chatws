@@ -8,65 +8,68 @@ services:
 
 # chatws - Backend
   backend:
-    image: chatws-server
     container_name: chatws-server
+    build:
+      context: backend
+      dockerfile: ./Dockerfile
+    image: chatws-server
     volumes:
       - ./backend:/app/chatws/server
     networks:
       - chatws_net
-    build:
-      context: backend
-      dockerfile: ./Dockerfile
     ports:
       - 8085:8085
+    command: ["sh", "-c", "trap 'docker-compose stop' EXIT; while :; do sleep 1; done"]
 
 # chatws - Frontend
   ui:
     container_name: chatws-ui
-    image: chatws-ui
-    networks:
-      - chatws_net
     build:
       context: frontend
       dockerfile: ./Dockerfile
+    image: chatws-ui
+    networks:
+      - chatws_net
     volumes:
       - ./frontend:/app/chatws/frontend
     ports:
-      - 3000:3000
+      - 3007:3007
+      - 9229:9229
     depends_on:
       - backend
+    command: ["sh", "-c", "trap 'docker-compose stop' EXIT; while :; do sleep 1; done"]
 
 # Elasticsearch
-  e:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      # - ES_PROTOCOL="http"
-      # - xpack.security.enabled=false
-      # - ELASTIC_APM_VERIFY_SERVER_CERT=false
-      # - XPACK_LICENSE_SELF_GENERATED_TYPE="basic"
-      # - node.max_local_storage_nodes=2
-    volumes:
-      - /c/Users/thyag/Workspaces/Java/Websockets/chat/elasticsearch:/usr/share/elasticsearch/data:rw
-      - /c/Users/thyag/Workspaces/Java/Websockets/chat/logs/elasticsearch:/usr/share/elasticsearch/logs,rw
-    networks:
-      - chatws_net
-    ports:
-      - 9200:9200
-      - 9300:9300
-    depends_on:
-      - backend
+#   e:
+#     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.9
+#     container_name: elasticsearch
+#     environment:
+#       - discovery.type=single-node
+#       # - ES_PROTOCOL="http"
+#       # - xpack.security.enabled=false
+#       # - ELASTIC_APM_VERIFY_SERVER_CERT=false
+#       # - XPACK_LICENSE_SELF_GENERATED_TYPE="basic"
+#       # - node.max_local_storage_nodes=2
+#     volumes:
+#       - /c/Users/thyag/Workspaces/Java/Websockets/chat/elasticsearch:/usr/share/elasticsearch/data:rw
+#       - /c/Users/thyag/Workspaces/Java/Websockets/chat/logs/elasticsearch:/usr/share/elasticsearch/logs,rw
+#     networks:
+#       - chatws_net
+#     ports:
+#       - 9200:9200
+#       - 9300:9300
+#     depends_on:
+#       - backend
 
-# Kibana
-  k:
-    image: docker.elastic.co/kibana/kibana:7.17.9
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    networks:
-      - chatws_net
-    ports:
-      - 5601:5601
-    depends_on:
-      - e
+# # Kibana
+#   k:
+#     image: docker.elastic.co/kibana/kibana:7.17.9
+#     container_name: kibana
+#     environment:
+#       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+#     networks:
+#       - chatws_net
+#     ports:
+#       - 5601:5601
+#     depends_on:
+#       - e

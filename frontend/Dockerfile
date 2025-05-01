@@ -1,13 +1,12 @@
-FROM node
+FROM node:18.16.0-slim
 
 WORKDIR /app/chatws/frontend
 
-COPY . .
-
 RUN npm install -g nodemon -y \
     && apt-get update -y \
-    && apt-get install git vim iputils-ping -y
+    && apt-get install git lsof vim iputils-ping -y
 
-EXPOSE 3000
+EXPOSE 3007
 
-CMD npm install -y && npm start
+# CMD npm install -y && npm start
+CMD [ "tail", "-f", "/dev/null" ]

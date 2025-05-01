@@ -1,26 +1,17 @@
-# Imagem base para o Maven (para compilar o projeto)
-FROM maven:3.9.4-eclipse-temurin-17 AS builder
+FROM openjdk:17-slim-bullseye
 
-# Define o diretório de trabalho dentro do container
-WORKDIR /app
+LABEL maintainer="Thiago Silva"
+LABEL email="thyagosousasilva@gmail.com"
 
-# Copia os arquivos do projeto Maven para o container
-COPY . .
+RUN apt-get update && \
+    apt-get install -y maven git python3 curl lsof iputils-ping htop telnet && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Executa o build do projeto usando Maven
-RUN mvn clean package -DskipTests
+ENV JAVA_OPTS="-Duser.timezone=UTC"
 
-# Imagem base para o runtime Java
-FROM eclipse-temurin:17-jre
+WORKDIR /workspace
 
-# Define o diretório de trabalho no container final
-WORKDIR /app
-
-# Copia o artefato gerado (JAR) do estágio de build
-COPY --from=builder /app/target/*.jar app.jar
-
-# Expõe a porta 8085
 EXPOSE 8085
 
-# Comando para rodar a aplicação
-CMD ["java", "-jar", "app.jar"]
+CMD [ "tail", "-f", "/dev/null" ]

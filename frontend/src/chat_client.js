@@ -58,6 +58,7 @@ joinButton.addEventListener('click', function () {
 sendButton.addEventListener('click', function () {
     console.log('click: sockJs: send');
 
+    
     stomp.send("/chat/talk", {}, JSON.stringify({
         sender: usernameField.value.trim(),
         content: messageField.value.trim(),
