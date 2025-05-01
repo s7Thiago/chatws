@@ -15,9 +15,8 @@ WORKDIR /app/chatws/server
 # Copia os arquivos do projeto
 COPY . .
 
-# Converte as quebras de linha e dá permissão de execução
-RUN dos2unix entrypoint.sh && \
-    chmod +x entrypoint.sh
+# Dá permissão de execução ao script
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 8085
 
