@@ -15,11 +15,11 @@ services:
     image: chatws-server
     volumes:
       - ./backend:/app/chatws/server
+      - ~/.m2:/root/.m2
     networks:
       - chatws_net
     ports:
       - 8085:8085
-    command: ["sh", "-c", "trap 'docker-compose stop' EXIT; while :; do sleep 1; done"]
 
 # chatws - Frontend
   ui:
@@ -37,7 +37,6 @@ services:
       - 9229:9229
     depends_on:
       - backend
-    command: ["sh", "-c", "trap 'docker-compose stop' EXIT; while :; do sleep 1; done"]
 
 # Elasticsearch
 #   e:

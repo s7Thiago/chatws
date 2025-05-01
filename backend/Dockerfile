@@ -10,8 +10,14 @@ RUN apt-get update && \
 
 ENV JAVA_OPTS="-Duser.timezone=UTC"
 
-WORKDIR /workspace
+WORKDIR /app/chatws/server
+
+# Copia os arquivos do projeto
+COPY . .
+
+# Dá permissão de execução ao script
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 8085
 
-CMD [ "tail", "-f", "/dev/null" ]
+ENTRYPOINT ["./entrypoint.sh"]
