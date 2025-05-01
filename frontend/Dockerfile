@@ -17,4 +17,4 @@ RUN chmod +x ./entrypoint.sh
 
 EXPOSE 3007
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/app/chatws/frontend/entrypoint.sh"]

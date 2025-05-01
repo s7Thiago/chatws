@@ -20,4 +20,4 @@ RUN chmod +x ./entrypoint.sh
 
 EXPOSE 8085
 
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["/app/chatws/server/entrypoint.sh"]
